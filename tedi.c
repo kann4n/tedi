@@ -53,6 +53,7 @@ enum editorHighlight {
   HL_MLCOMMENT,
   HL_KEYWORD_1,
   HL_KEYWORD_2,
+  HL_KEYWORD_3,
   HL_STRING,
   HL_NUMBER,
   HL_MATCH,
@@ -119,15 +120,32 @@ struct editorConfig E;
 
 char *C_HL_extensions[] = {".c", ".cpp", ".h",
                            NULL}; // last element must be NULL
+char *Python_HL_extensions[] = {".py"};
+
+/*** keywords ***/
+
 char *C_HL_keywords[] = {"switch",    "if",      "while",   "for",    "break",
                          "continue",  "return",  "else",    "struct", "union",
                          "typedef",   "static",  "enum",    "class",  "case",
                          "int|",      "long|",   "double|", "float|", "char|",
                          "unsigned|", "signed|", "void|",   NULL};
 
+char *Python_HL_keywords[] = {
+    "False",  "None",     "True",    "and",      "as",       "assert", "async",
+    "await",  "break",    "class",   "continue", "def",      "del",    "elif",
+    "else",   "except",   "finally", "for",      "from",     "global", "if",
+    "import", "in",       "is",      "lambda",   "nonlocal", "not",    "or",
+    "pass",   "raise",    "return",  "try",      "while",    "with",   "yield",
+    "int|",   "float|",   "str|",    "bool|",    "list|",    "dict|",  "set|",
+    "tuple|", "complex|", "bytes|",  NULL};
+
+/*** HighLight DataBase ***/
+
 #define HL_HL_NUMBERS (1 << 0)
 struct editorSyntax HLDB[] = {
     {"c", C_HL_extensions, C_HL_keywords, "//", "/*", "*/",
+     HL_HL_NUMBERS | HL_HL_STRINGS},
+    {"python", Python_HL_extensions, Python_HL_keywords, "#", "", "",
      HL_HL_NUMBERS | HL_HL_STRINGS},
 };
 
