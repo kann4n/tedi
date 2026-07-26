@@ -1,6 +1,8 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -pedantic
 
+SRC = tedi.c utils.c
+
 # Optimization flags: O3 for speed, march=native for specific CPU, -s to strip bloat
 OPT_FLAGS = -O3 -march=native -s
 
@@ -14,12 +16,12 @@ all: tedi
 
 tedi: tedi.c
 	@mkdir -p build
-	$(CC) tedi.c $(CFLAGS) $(OPT_FLAGS) -o build/tedi
+	$(CC) $(SRC) $(CFLAGS) $(OPT_FLAGS) -o build/tedi
 	@echo "Built optimized release binary in build/tedi"
 
 debug: tedi.c
 	@mkdir -p build
-	$(CC) tedi.c $(CFLAGS) $(DEBUG_FLAGS) -o build/tedi_debug
+	$(CC) $(SRC) $(CFLAGS) $(DEBUG_FLAGS) -o build/tedi_debug
 	@echo "Built debug binary in build/tedi_debug"
 
 clean:

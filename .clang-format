@@ -1,0 +1,50 @@
+---
+BasedOnStyle: LLVM
+Language: Cpp
+
+# Indentation & Whitespace
+IndentWidth: 2
+ContinuationIndentWidth: 2
+TabWidth: 2
+UseTab: Never
+ColumnLimit: 80
+
+# Switch & Case Formatting
+AllowShortCaseLabelsOnASingleLine: true
+IndentCaseLabels: false
+
+# Functions & Control Blocks
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Alignments
+AlignConsecutiveAssignments:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+
+AlignConsecutiveDeclarations:
+  Enabled: false
+
+AlignConsecutiveMacros:
+  Enabled: true
+  AcrossEmptyLines: false
+  AcrossComments: false
+
+AlignEscapedNewlines: Left
+
+# Braces (K&R style — standard for C system code)
+BreakBeforeBraces: Attach
+
+# Includes Management
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+# Comments
+ReflowComments: true
+SpacesInContainerLiterals: false
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: false
+...
