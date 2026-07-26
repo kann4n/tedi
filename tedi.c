@@ -458,26 +458,31 @@ void editorLoadColorScheme(const char *path) {
   size_t linecap = 0;
 
   getfilename(E.theme.name, path, sizeof(E.theme.name));
-
+  // TODO: separate this to another function
   while ((linelen = getline(&line, &linecap, fp)) != -1) {
     char key[32];
     int val;
-
     if (sscanf(line, "%[^=]=%d", key, &val) == 2) {
       if (strcmp(key, "comment") == 0)
         E.theme.comment = val;
+      else if (strcmp(key, "default_bg") == 0)
+        E.theme.default_bg = val;
+      else if (strcmp(key, "default_fg") == 0)
+        E.theme.default_fg = val;
       else if (strcmp(key, "keyword1") == 0)
         E.theme.keyword1 = val;
       else if (strcmp(key, "keyword2") == 0)
         E.theme.keyword2 = val;
-      else if (strcmp(key, "string") == 0)
-        E.theme.string = val;
-      else if (strcmp(key, "number") == 0)
-        E.theme.number = val;
+      else if (strcmp(key, "keyword3") == 0)
+        E.theme.keyword3 = val;
       else if (strcmp(key, "match") == 0)
         E.theme.match = val;
-      else if (strcmp(key, "default_fg") == 0)
-        E.theme.default_fg = val;
+      else if (strcmp(key, "mlcomment") == 0)
+        E.theme.mlcomment = val;
+      else if (strcmp(key, "number") == 0)
+        E.theme.number = val;
+      else if (strcmp(key, "string") == 0)
+        E.theme.string = val;
     }
   }
 
