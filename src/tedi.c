@@ -130,7 +130,7 @@ struct editorConfig E;
 
 char *C_HL_extensions[]      = {".c", ".cpp", ".h",
                                 NULL}; // last element must be NULL
-char *Python_HL_extensions[] = {".py"};
+char *Python_HL_extensions[] = {".py", NULL};
 
 /*** keywords ***/
 
@@ -995,7 +995,7 @@ void editorScroll() {
     E.coloff = E.rx - E.screencols + 1;
   }
 }
-
+// TODO: redo the work
 void editorDrawRows(struct abuf *ab) {
   for (int y = 0; y < E.screenrows; y++) {
     int filerow = y + E.rowoff;
@@ -1030,9 +1030,9 @@ void editorDrawRows(struct abuf *ab) {
       for (int j = 0; j < len; j++) {
         if (iscntrl(c[j])) {
           char sym = SYM_CAPED_CTRL(c[j]);
-          abufAppend(ab, "\x1b[7m", 4);
+          abufAppend(ab, "\x1b[7m", 4); // set inverse colorcode
           abufAppend(ab, &sym, 1);
-          abufAppend(ab, "\x1b[m", 3);
+          abufAppend(ab, "\x1b[m", 3); // reset colorcode
           if (current_color != -1) {
             char buf[16];
             int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", current_color);
@@ -1040,7 +1040,7 @@ void editorDrawRows(struct abuf *ab) {
           }
         } else if (hl[j] == HL_NORMAL) {
           if (current_color != -1) {
-            abufAppend(ab, "\x1b[39m", 5);
+            abufAppend(ab, "\x1b[39m", 5); // default color
             current_color = -1;
           }
           abufAppend(ab, &c[j], 1);
