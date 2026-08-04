@@ -69,6 +69,14 @@ enum COLOR {
   FG_MAGENTA,
   FG_CYAN,
   FG_WHITE,
+  BG_BLACK = 40,
+  BG_RED,
+  BG_GREEN,
+  BG_YELLOW,
+  BG_BLUE,
+  BG_MAGENTA,
+  BG_CYAN,
+  BG_WHITE,
 };
 
 /*** styleing ***/
@@ -997,6 +1005,11 @@ void editorScroll() {
 }
 // TODO: redo the work
 void editorDrawRows(struct abuf *ab) {
+  char default_color[32];
+  int dlen = snprintf(default_color, sizeof(default_color), "\x1b[%d;%dm",
+                      E.theme.default_fg, E.theme.default_bg);
+  abufAppend(ab, default_color, dlen);
+
   for (int y = 0; y < E.screenrows; y++) {
     int filerow = y + E.rowoff;
     if (filerow >= E.numrows) {
@@ -1027,20 +1040,25 @@ void editorDrawRows(struct abuf *ab) {
       char *c           = &E.row[filerow].render[E.coloff];
       unsigned char *hl = &E.row[filerow].hl[E.coloff];
       int current_color = -1;
+
       for (int j = 0; j < len; j++) {
         if (iscntrl(c[j])) {
           char sym = SYM_CAPED_CTRL(c[j]);
           abufAppend(ab, "\x1b[7m", 4); // set inverse colorcode
           abufAppend(ab, &sym, 1);
           abufAppend(ab, "\x1b[m", 3); // reset colorcode
+
+          // Must re-apply after a full reset \x1b[m
+          abufAppend(ab, default_color, dlen);
+
           if (current_color != -1) {
-            char buf[16];
+            char buf[24];
             int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", current_color);
             abufAppend(ab, buf, clen);
           }
         } else if (hl[j] == HL_NORMAL) {
           if (current_color != -1) {
-            abufAppend(ab, "\x1b[39m", 5); // default color
+            abufAppend(ab, default_color, dlen);
             current_color = -1;
           }
           abufAppend(ab, &c[j], 1);
@@ -1048,15 +1066,16 @@ void editorDrawRows(struct abuf *ab) {
           int color = editorSyntaxToColor(hl[j]);
           if (color != current_color) {
             current_color = color;
-            char buf[16];
+            char buf[24];
             int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", color);
             abufAppend(ab, buf, clen);
           }
           abufAppend(ab, &c[j], 1);
         }
       }
-      abufAppend(ab, "\x1b[39m", 5);
+      abufAppend(ab, default_color, dlen);
     }
+
     abufAppend(ab, "\x1b[K", 3);
     abufAppend(ab, "\r\n", 2);
   }
@@ -1139,6 +1158,7 @@ void initTheme() {
   E.theme.number     = FG_RED;
   E.theme.match      = FG_BLUE;
   E.theme.default_fg = FG_WHITE;
+  E.theme.default_bg = BG_BLACK;
   strcpy(E.theme.name, "default");
 }
 
