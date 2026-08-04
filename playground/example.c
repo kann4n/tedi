@@ -1,16 +1,40 @@
-#include <stdio.h>
+/*
+ * Theme Test File
+ * Open this in tedi to see the syntax highlighting
+ */
+
+#include <stdio.h> // This is a single-line comment
+
+// A simple struct definition to test keywords
+struct Point {
+  int x;
+  int y;
+  float weight;
+};
 
 int main() {
-  printf("\033[4;31mTedi\033[0m\n");
-  printf("Simple Text Editor\n");
-  printf("\n\n");
-  printf("This code is just for testing out if the tedi editor is working");
-  // comment
-  /*
-   * this is 
-   * a
-   * mutiline
-   * commnet
-   */
+  int count = 100;
+  double pi = 3.14159;
+
+  // Testing strings
+  char letter    = 'f';
+  char *greeting = "Hello, kannan!";
+
+  // Testing control flow keywords
+  if (count > 0) {
+    for (int i = 0; i < 5; i++) {
+      continue;
+    }
+  } else {
+    return -1;
+  }
+
+  switch (letter) {
+  case 'G': break;
+    default:
+        printf("wtf\n");
+        break;
+  }
+
   return 0;
 }
