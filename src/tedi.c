@@ -1151,9 +1151,12 @@ void editorSetStatusMsg(const char *fmt, ...) {
 /*** init  ***/
 
 void initTheme() {
+    // TODO: add rgb support
   E.theme.comment    = FG_CYAN;
+  E.theme.mlcomment  = FG_CYAN;
   E.theme.keyword1   = FG_YELLOW;
   E.theme.keyword2   = FG_MAGENTA;
+  E.theme.keyword3   = FG_MAGENTA;
   E.theme.string     = FG_GREEN;
   E.theme.number     = FG_RED;
   E.theme.match      = FG_BLUE;
