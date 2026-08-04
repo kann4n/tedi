@@ -1,7 +1,9 @@
 comment=36
-keyword1=35
-keyword2=31
+keyword1=31
+keyword2=33
+keyword3=34
 string=32
-number=33
-match=44
+number=35
+match=43
 default_fg=37
+default_bg=40
