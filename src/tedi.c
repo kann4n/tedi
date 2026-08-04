@@ -1089,7 +1089,7 @@ void editorDrawStatusBar(struct abuf *ab) {
   char *file_status = E.dirty ? "(modified)" : "";
   char *filetype    = E.syntax ? E.syntax->filetype : "idk";
   int len =
-    snprintf(status, sizeof(status), " %.20s %.10s", status_msg, file_status);
+    snprintf(status, sizeof(status), " %.24s %.16s", status_msg, file_status);
   int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d ", filetype,
                       E.cy + 1, E.numrows);
   if (len > E.screencols)
