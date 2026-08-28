@@ -186,7 +186,7 @@ void die(const char *msg) {
 }
 
 void disableRawMode() {
-    write(STDOUT_FILENO, "\x1b[?1049l", 8); // disable alternate screen buffer
+  write(STDOUT_FILENO, "\x1b[?1049l", 8); // disable alternate screen buffer
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
     die("tcsetattr");
 }
@@ -1083,7 +1083,10 @@ void editorDrawRows(struct abuf *ab) {
 }
 
 void editorDrawStatusBar(struct abuf *ab) {
-  abufAppend(ab, "\x1b[7m", 4);
+  char fg[] = "\x1b[38;2;255;255;255m";
+  char bg[] = "\x1b[48;2;20;20;25m";
+  abufAppend(ab, fg, sizeof(fg));
+  abufAppend(ab, bg, sizeof(bg));
 
   char status[80], rstatus[80];
   char *status_msg  = E.filename ? E.filename : "[No Name]";
@@ -1152,7 +1155,7 @@ void editorSetStatusMsg(const char *fmt, ...) {
 /*** init  ***/
 
 void initTheme() {
-    // TODO: add rgb support
+  // TODO: add rgb support
   E.theme.comment    = FG_CYAN;
   E.theme.mlcomment  = FG_CYAN;
   E.theme.keyword1   = FG_YELLOW;
