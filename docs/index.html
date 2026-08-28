@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="author" content="tedi project">
+  <title>Tedi -- Terminal Text Editor</title>
+</head>
+<body style="max-width: 1200px; margin: 0 auto;">
+
+<h1>Tedi &mdash; Terminal Text Editor</h1>
+<p><tt>a minimal terminal text editor written in C.</tt></p>
+<p><b>Version:</b> 0.0.1 &nbsp;|&nbsp; <b>Language:</b> C (C11) </p>
+
+<hr>
+
+<ul>
+  <li><a href="#what">What is Tedi?</a></li>
+  <li><a href="#version">Versions</a></li>
+  <li><a href="#features">Features</a></li>
+  <li><a href="#keybindings">Keybindings</a></li>
+  <li><a href="#build">Building &amp; Running</a></li>
+  <li><a href="#colorscheme">Color Schemes</a></li>
+  <li><a href="#bugs">Known Bugs</a></li>
+  <li><a href="#roadmap">Roadmap</a></li>
+  <li><a href="#internals">Internals</a></li>
+  <li><a href="#todos">TODOs in Source</a></li>
+</ul>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="what">What is Tedi?</a></h2>
+
+<p>
+  Tedi is a small, self-contained terminal text editor written from scratch in C (C11).
+  It operates directly in raw terminal mode using ANSI/VT100 escape sequences,
+  with no external library dependencies (no ncurses, no readline).
+  It supports syntax highlighting for C and Python, incremental search,
+  file save, and a color-scheme loader.
+</p>
+
+<p>
+  The entire editor lives in two source files:<br>
+  &nbsp;&nbsp;<tt>src/tedi.c</tt> &mdash; main editor loop, rendering, input, highlighting<br>
+  &nbsp;&nbsp;<tt>src/utils.c</tt> &mdash; filename extraction and true-color helpers
+</p>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="version">Versions</a></h2>
+
+<table border="1" cellpadding="4" cellspacing="0">
+  <tr>
+    <th>Version</th>
+    <th>Status</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td><b>0.0.1</b></td>
+    <td>Current / Active</td>
+    <td>
+      First working version. Raw mode, basic editing, syntax highlighting for C and Python,
+      incremental search, file open/save, color-scheme file loading, alternate screen buffer.
+    </td>
+  </tr>
+  <tr>
+    <td>0.0.2</td>
+    <td>Planned</td>
+    <td>RGB/true-color theme support, separate color-scheme loading logic, general cleanup.</td>
+  </tr>
+  <tr>
+    <td>0.1.0</td>
+    <td>Future</td>
+    <td>Multiple language support, config file, line numbers, mouse support investigation.</td>
+  </tr>
+</table>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="features">Features</a></h2>
+
+<h3>Implemented (v0.0.1)</h3>
+<ul>
+  <li>Raw terminal mode via <tt>termios</tt> &mdash; no external dependencies</li>
+  <li>Alternate screen buffer (editor does not trash your scrollback on exit)</li>
+  <li>Open a file from the command line: <tt>tedi myfile.c</tt></li>
+  <li>Create a new file: <tt>tedi</tt> (prompted for filename on save)</li>
+  <li>Save file &mdash; <kbd>Ctrl-S</kbd></li>
+  <li>Quit &mdash; <kbd>Ctrl-Q</kbd> (with unsaved-change guard; press <kbd>!</kbd> to force)</li>
+  <li>Incremental search &mdash; <kbd>Ctrl-F</kbd> (arrow keys to navigate matches, <kbd>Enter</kbd>/<kbd>Esc</kbd> to exit)</li>
+  <li>Syntax highlighting:
+    <ul>
+      <li>C / C++ / headers (<tt>.c</tt>, <tt>.cpp</tt>, <tt>.h</tt>) &mdash; keywords, types, strings, numbers, single-line and multi-line comments</li>
+      <li>Python (<tt>.py</tt>) &mdash; keywords, built-in types, strings, numbers, single-line comments</li>
+    </ul>
+  </li>
+  <li>Color scheme loader from plain-text <tt>.colorscheme</tt> files &mdash; <kbd>Ctrl-T</kbd> loads <tt>test.colorscheme</tt></li>
+  <li>Default theme (ANSI 16-color): cyan comments, yellow keywords, magenta types, green strings, red numbers, blue search matches</li>
+  <li>Horizontal and vertical scrolling</li>
+  <li>Tab rendering as spaces (tab stop = 8)</li>
+  <li>Control character display (inverted caret notation, e.g. <tt>^A</tt>)</li>
+  <li>Status bar: filename, modified flag, filetype, cursor position (row/total)</li>
+  <li>Message bar: timed status messages (TTL = 3 seconds)</li>
+  <li>Dirty-flag tracking (unsaved changes)</li>
+  <li><tt>Home</tt> / <tt>End</tt> keys</li>
+  <li><tt>Page Up</tt> / <tt>Page Down</tt></li>
+  <li><tt>Delete</tt> key</li>
+  <li>Backspace / <kbd>Ctrl-H</kbd></li>
+  <li>Arrow key navigation (including wrapping across lines)</li>
+  <li>Insert newline (<kbd>Enter</kbd>)</li>
+  <li>Multi-line comment state carried across rows</li>
+  <li>Window resize detection via <tt>ioctl TIOCGWINSZ</tt></li>
+  <li>True-color utility functions (<tt>setColorFG</tt>, <tt>setColorBG</tt>) in <tt>utils.c</tt> (available but not yet wired into the theme system)</li>
+</ul>
+
+<h3>Not Yet Implemented</h3>
+<ul>
+  <li>Line numbers</li>
+  <li>Undo / Redo</li>
+  <li>Copy, Cut, Paste</li>
+  <li>Multiple open files / split views</li>
+  <li>Mouse support</li>
+  <li>Config file (~/.tedirc or similar)</li>
+  <li>Soft-wrap / hard-wrap</li>
+  <li>RGB / true-color theme fields (functions exist, not wired up)</li>
+  <li>Runtime colorscheme picker (only <tt>test.colorscheme</tt> is hard-coded to <kbd>Ctrl-T</kbd>)</li>
+  <li>Syntax highlighting for languages beyond C and Python</li>
+  <li>Shell integration (run a command, pipe output into buffer)</li>
+  <li>Plugin or extension system</li>
+</ul>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="keybindings">Keybindings</a></h2>
+
+<table border="1" cellpadding="4" cellspacing="0">
+  <tr><th>Key</th><th>Action</th></tr>
+  <tr><td><kbd>Ctrl-S</kbd></td><td>Save file (prompts for name if new)</td></tr>
+  <tr><td><kbd>Ctrl-Q</kbd></td><td>Quit (warns if unsaved; press <kbd>!</kbd> to force)</td></tr>
+  <tr><td><kbd>Ctrl-F</kbd></td><td>Incremental search (Arrow keys to cycle matches, Enter/Esc to exit)</td></tr>
+  <tr><td><kbd>Ctrl-T</kbd></td><td>Load <tt>test.colorscheme</tt> (hard-coded path)</td></tr>
+  <tr><td><kbd>Ctrl-H</kbd></td><td>Backspace (legacy CC-8)</td></tr>
+  <tr><td><kbd>Ctrl-L</kbd></td><td>No-op (traditionally &quot;refresh screen&quot;; currently does nothing visible)</td></tr>
+  <tr><td><kbd>Esc</kbd></td><td>No-op (swallowed; used as prefix for escape sequences)</td></tr>
+  <tr><td><kbd>Arrow Keys</kbd></td><td>Move cursor (wraps left/right across line boundaries)</td></tr>
+  <tr><td><kbd>Home</kbd></td><td>Move to column 0</td></tr>
+  <tr><td><kbd>End</kbd></td><td>Move to end of current line</td></tr>
+  <tr><td><kbd>Page Up</kbd></td><td>Scroll up one screen</td></tr>
+  <tr><td><kbd>Page Down</kbd></td><td>Scroll down one screen</td></tr>
+  <tr><td><kbd>Delete</kbd></td><td>Delete character under cursor (move right then backspace)</td></tr>
+  <tr><td><kbd>Backspace</kbd></td><td>Delete character to the left of cursor</td></tr>
+  <tr><td><kbd>Enter</kbd></td><td>Insert newline (splits line at cursor)</td></tr>
+  <tr><td>any printable</td><td>Insert character at cursor</td></tr>
+</table>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="build">Building &amp; Running</a></h2>
+
+<pre>
+  git clone &lt;repo&gt;
+  cd tedi
+  make          # release build: build/tedi
+  make debug    # debug build:   build/tedi_debug
+  make clean    # remove build/
+
+  ./build/tedi              # open editor (new file)
+  ./build/tedi myfile.c     # open existing file
+</pre>
+
+<p>
+  <b>Compiler:</b> gcc (default) or any C11-compliant compiler. Override with <tt>CC=clang make</tt>.<br>
+  <b>Release flags:</b> <tt>-O3 -march=native -s -Wall -Wextra -Wpedantic</tt><br>
+  <b>Debug flags:</b> <tt>-g -O0 -Wall -Wextra -Wpedantic</tt>
+</p>
+
+<p>
+  The <tt>DEBUG</tt> macro (set to <tt>1</tt> in source) controls whether <tt>die()</tt>
+  prints the actual failing system call name or just prints <tt>&quot;tedi&quot;</tt>.
+</p>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="colorscheme">Color Schemes</a></h2>
+
+<p>
+  A <tt>.colorscheme</tt> file is a plain-text key=value file using ANSI color codes (integers).
+  Load one at runtime with <kbd>Ctrl-T</kbd> (currently hard-coded to <tt>test.colorscheme</tt>).
+</p>
+
+<h3>Example: <tt>test.colorscheme</tt></h3>
+<pre>
+  comment=36
+  keyword1=31
+  keyword2=33
+  keyword3=34
+  string=32
+  number=35
+  match=43
+  default_fg=37
+  default_bg=40
+</pre>
+
+<h3>ANSI Color Reference (foreground)</h3>
+<table border="1" cellpadding="4" cellspacing="0">
+  <tr><th>Code</th><th>Color</th></tr>
+  <tr><td>30</td><td>Black</td></tr>
+  <tr><td>31</td><td>Red</td></tr>
+  <tr><td>32</td><td>Green</td></tr>
+  <tr><td>33</td><td>Yellow</td></tr>
+  <tr><td>34</td><td>Blue</td></tr>
+  <tr><td>35</td><td>Magenta</td></tr>
+  <tr><td>36</td><td>Cyan</td></tr>
+  <tr><td>37</td><td>White</td></tr>
+</table>
+
+<p>
+  <b>Note:</b> The <tt>setColorFG</tt> and <tt>setColorBG</tt> functions in <tt>src/utils.c</tt>
+  already support true-color (24-bit RGB via <tt>ESC[38;2;r;g;bm</tt>), but the
+  <tt>editorColorScheme</tt> struct stores colors as plain integers (ANSI codes only).
+  RGB support is a known <a href="#todos">TODO</a>.
+</p>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="bugs">Known Bugs</a></h2>
+
+<ol>
+  <li>
+    <b>Ctrl-Q escape sequence off-by-one.</b><br>
+    <tt>write(STDOUT_FILENO, "\x1b[?1049l", 6)</tt> passes length 6 but the string
+    <tt>\x1b[?1049l</tt> is 8 bytes. The last two bytes (<tt>4</tt> and <tt>9l</tt>... wait,
+    specifically the <tt>9l</tt> suffix) are not written, so the alternate screen buffer
+    may not be properly exited on quit in some terminals. The correct length is <tt>8</tt>.
+    <tt>disableRawMode()</tt> already writes it correctly with length <tt>8</tt>, so
+    this only affects the force-quit path through <kbd>Ctrl-Q</kbd> + <kbd>!</kbd>.
+  </li>
+  <li>
+    <b>Raw mode flags: <tt>c_cflag |= ~(CS8)</tt> is wrong.</b><br>
+    Line 202: <tt>raw.c_cflag |= ~(CS8);</tt> should be <tt>raw.c_cflag |= CS8;</tt>.
+    The bitwise-NOT of <tt>CS8</tt> ORed in sets nearly all bits in <tt>c_cflag</tt>,
+    which is unintended. In practice most terminals survive this because the original
+    termios is restored on exit, but it is technically incorrect.
+  </li>
+  <li>
+    <b>Colorscheme name extraction strips extension incorrectly.</b><br>
+    <tt>getfilename()</tt> in <tt>src/utils.c</tt> searches from the start of the path
+    for the last dot, not from after the last slash. A path like <tt>../themes/test.colorscheme</tt>
+    would result in a name starting from the slash before <tt>test</tt>, including the slash
+    character, because <tt>name_start</tt> is set to the slash pointer (not <tt>slash + 1</tt>).
+  </li>
+  <li>
+    <b>Search wraps but does not indicate wrap-around.</b><br>
+    Incremental search silently cycles from the last match back to the first without
+    any visual or status-bar notification that the search has wrapped.
+  </li>
+  <li>
+    <b>Status message bar is not cleared on quit-cancel.</b><br>
+    After pressing <kbd>Ctrl-Q</kbd> with unsaved changes and then declining with any key
+    other than <kbd>!</kbd>, the warning message stays until it naturally expires (3 seconds)
+    rather than being cleared immediately.
+  </li>
+  <li>
+    <b>Tab stop is fixed at 8.</b><br>
+    <tt>TAB_STOP</tt> is a compile-time constant. Files that use 2- or 4-space tabs will
+    render with wider indentation than expected, with no runtime override.
+  </li>
+  <li>
+    <b>No window-resize signal handling.</b><br>
+    <tt>SIGWINCH</tt> is not caught. Resizing the terminal window while tedi is open will
+    not update <tt>E.screenrows</tt> / <tt>E.screencols</tt> until the editor is restarted.
+  </li>
+  <li>
+    <b>Keyword3 is unused in syntax definitions.</b><br>
+    <tt>HL_KEYWORD_3</tt> exists in the highlight enum and the color scheme struct, but
+    no language in <tt>HLDB</tt> assigns any keyword to the third tier. It is dead code.
+  </li>
+  <li>
+    <b>Python multiline comment / docstring not highlighted.</b><br>
+    Python triple-quoted strings (<tt>"""..."""</tt> and <tt>'''...'''</tt>) are not
+    handled by the multiline comment system (both <tt>mcs</tt> and <tt>mce</tt> are set
+    to empty strings in the Python HLDB entry), so they are highlighted as ordinary strings
+    only until the closing delimiter appears on the same line.
+  </li>
+</ol>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="roadmap">Roadmap</a></h2>
+
+<h3>Near-term (v0.0.2)</h3>
+<ul>
+  <li>Fix the <tt>write(..., "\x1b[?1049l", 6)</tt> length bug in <kbd>Ctrl-Q</kbd> quit path</li>
+  <li>Fix <tt>raw.c_cflag |= ~(CS8)</tt> &rarr; <tt>raw.c_cflag |= CS8</tt></li>
+  <li>Fix <tt>getfilename()</tt> off-by-one (use <tt>slash + 1</tt> not <tt>slash</tt>)</li>
+  <li>Wire true-color RGB into <tt>editorColorScheme</tt> (the utility functions already exist)</li>
+  <li>Separate <tt>editorLoadColorScheme()</tt> parsing into its own helper (source TODO)</li>
+  <li>Make <kbd>Ctrl-T</kbd> prompt for a colorscheme filename instead of hard-coding <tt>test.colorscheme</tt></li>
+  <li>Clear status message immediately when quit is cancelled</li>
+  <li>Handle <tt>SIGWINCH</tt> for terminal resize</li>
+</ul>
+
+<h3>Medium-term (v0.1.0)</h3>
+<ul>
+  <li>Line number gutter (optional, toggleable)</li>
+  <li>Undo / Redo (gap buffer or simple operation stack)</li>
+  <li>Copy / Cut / Paste (internal clipboard; system clipboard via xclip/wl-copy optional)</li>
+  <li>Configurable tab stop at runtime</li>
+  <li>Python triple-quoted string / docstring multiline highlighting</li>
+  <li>Add more languages to HLDB (Lua, Shell, Markdown, HTML)</li>
+  <li>Use <tt>HL_KEYWORD_3</tt> for a meaningful category (e.g. built-in functions)</li>
+  <li>Config file support (<tt>~/.tedirc</tt> or <tt>XDG_CONFIG_HOME</tt>)</li>
+  <li>Search result count in status bar (<tt>match 2 of 7</tt>)</li>
+  <li>Wrap-around indicator for search</li>
+</ul>
+
+<h3>Long-term / Aspirational</h3>
+<ul>
+  <li>Multiple buffers / file tabs</li>
+  <li>Split pane view</li>
+  <li>Mouse click to position cursor</li>
+  <li>Soft word wrap mode</li>
+  <li>Autoindent</li>
+  <li>Bracket matching / auto-close</li>
+  <li>Shell command execution and output capture into buffer</li>
+  <li>LSP integration (very ambitious)</li>
+  <li>Lua scripting for keybindings and plugins</li>
+</ul>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="internals">Internals</a></h2>
+
+<h3>Data Structures</h3>
+<dl>
+  <dt><tt>struct editorConfig E</tt> (global singleton)</dt>
+  <dd>
+    Holds cursor position (<tt>cx</tt>, <tt>cy</tt>, <tt>rx</tt> for rendered x),
+    scroll offsets (<tt>rowoff</tt>, <tt>coloff</tt>), terminal dimensions,
+    the row array, dirty flag, filename, status message, current syntax,
+    original termios settings, and the active color theme.
+  </dd>
+
+  <dt><tt>typedef struct erow</tt></dt>
+  <dd>
+    Represents one line of text. Stores the raw character data (<tt>chars</tt>),
+    a rendered version with tabs expanded (<tt>render</tt>),
+    a per-character highlight array (<tt>hl</tt>),
+    and an <tt>hl_open_comment</tt> flag that propagates multiline comment state
+    to the next row.
+  </dd>
+
+  <dt><tt>struct editorSyntax</tt></dt>
+  <dd>
+    Defines a language: file extensions, keyword arrays (two tiers), single-line
+    comment start token, multiline comment start/end tokens, and flags
+    (<tt>HL_HL_NUMBERS</tt>, <tt>HL_HL_STRINGS</tt>).
+  </dd>
+
+  <dt><tt>struct editorColorScheme</tt></dt>
+  <dd>
+    Maps highlight categories to ANSI color codes (integers).
+    Also stores a 16-character name.
+    True-color is not yet stored here (see <a href="#bugs">Known Bugs</a> / <a href="#roadmap">Roadmap</a>).
+  </dd>
+
+  <dt><tt>struct abuf</tt> (append buffer)</dt>
+  <dd>
+    A simple growable byte buffer. All screen output is accumulated into one
+    <tt>abuf</tt> per frame and written with a single <tt>write()</tt> call
+    to avoid flickering.
+  </dd>
+</dl>
+
+<h3>Rendering Pipeline (one frame)</h3>
+<pre>
+  editorRefreshScreen()
+    editorScroll()             -- clamp rowoff/coloff to keep cursor visible
+    abufAppend hide-cursor ESC
+    abufAppend cursor-home ESC
+    editorDrawRows()           -- render text lines with syntax colors
+    editorDrawStatusBar()      -- filename | modified | filetype | row/total
+    editorDrawMsgBar()         -- timed status message
+    abufAppend cursor-position ESC
+    abufAppend show-cursor ESC
+    write(STDOUT_FILENO, ab.buf, ab.len)
+    abufFree()
+</pre>
+
+<h3>Input Loop</h3>
+<pre>
+  while(1):
+    editorRefreshScreen()
+    editorProcessKeypress()
+      editorReadkey()       -- reads raw bytes, decodes escape sequences
+      dispatch on key       -- movement, edit, save, search, quit, etc.
+</pre>
+
+<h3>Syntax Highlighting</h3>
+<p>
+  Highlighting is computed lazily per row in <tt>editorUpdateSyntax()</tt> and stored
+  in the <tt>erow.hl</tt> byte array. Each byte is an <tt>enum editorHighlight</tt> value.
+  Multiline comment state is tracked via <tt>hl_open_comment</tt> on each row;
+  when a row's open-comment state changes, the next row is re-highlighted recursively.
+</p>
+
+<h3>File I/O</h3>
+<p>
+  <b>Open:</b> reads with <tt>getline()</tt>, strips <tt>\r\n</tt>, inserts rows.<br>
+  <b>Save:</b> serializes all rows to a single string (<tt>editorRowsToStr()</tt>),
+  then uses <tt>open(O_RDWR|O_CREAT)</tt> + <tt>ftruncate()</tt> + <tt>write()</tt>.
+  This approach is atomic enough for a simple editor but does not use a temp-file
+  swap strategy, so a crash mid-write could corrupt the file.
+</p>
+
+<hr>
+
+<!-- =========================================================== -->
+<h2><a name="todos">TODOs in Source</a></h2>
+
+<p>These are comments found directly in the source code:</p>
+
+<ul>
+  <li>
+    <tt>src/tedi.c:26</tt> &mdash;
+    <tt>#define TEDI_VERSION "0.0.1" // _why ?</tt><br>
+    The version string comment is a placeholder/joke. Needs a real versioning scheme.
+  </li>
+  <li>
+    <tt>src/tedi.c:96</tt> &mdash;
+    <tt>// TODO: improve this in future</tt> (on <tt>struct editorColorScheme</tt>)<br>
+    The color scheme struct needs RGB support and a richer format.
+  </li>
+  <li>
+    <tt>src/tedi.c:471</tt> &mdash;
+    <tt>// TODO: separate this to another function</tt> (inside <tt>editorLoadColorScheme()</tt>)<br>
+    The key=value parsing loop should be extracted into its own function for clarity and reuse.
+  </li>
+  <li>
+    <tt>src/tedi.c:1167</tt> &mdash;
+    <tt>// TODO: add rgb support</tt> (inside <tt>initTheme()</tt>)<br>
+    The default theme should eventually use full RGB colors instead of ANSI 16-color codes.
+  </li>
+</ul>
+
+<hr>
+
+<p>
+  <small>
+    This document was generated by reviewing the tedi source code at commit 35e236f<br>
+    Files reviewed: <tt>src/tedi.c</tt>, <tt>src/utils.c</tt>, <tt>src/utils.h</tt>,
+    <tt>Makefile</tt>, <tt>help.txt</tt>, <tt>test.colorscheme</tt>,
+    <tt>docs/ANSI-escape-sequences.md</tt>, <tt>playground/example.c</tt>,
+    <tt>playground/example.py</tt>, <tt>tests/truecolor_support.c</tt>.<br>
+  </small>
+</p>
+
+</body>
+</html>
