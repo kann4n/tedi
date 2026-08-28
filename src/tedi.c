@@ -836,6 +836,13 @@ void abufFree(struct abuf *ab) {
   free(ab->buf);
 }
 
+void abufSetColor(struct abuf *ab, char *fg, char *bg) {
+  if (!fg && !bg)
+    return;
+  abufAppend(ab, fg, strlen(fg));
+  abufAppend(ab, bg, strlen(bg));
+}
+
 /*** input ***/
 
 // prompt is expected to have %s where user input will be displayed
@@ -1085,8 +1092,7 @@ void editorDrawRows(struct abuf *ab) {
 void editorDrawStatusBar(struct abuf *ab) {
   char fg[] = "\x1b[38;2;255;255;255m";
   char bg[] = "\x1b[48;2;20;20;25m";
-  abufAppend(ab, fg, sizeof(fg));
-  abufAppend(ab, bg, sizeof(bg));
+  abufSetColor(ab, fg, bg);
 
   char status[80], rstatus[80];
   char *status_msg  = E.filename ? E.filename : "[No Name]";
@@ -1115,6 +1121,9 @@ void editorDrawStatusBar(struct abuf *ab) {
 
 void editorDrawMsgBar(struct abuf *ab) {
   abufAppend(ab, "\x1b[K", 3);
+  char fg[] = "\x1b[38;2;255;255;255m";
+  char bg[] = "\x1b[48;2;30;30;35m";
+  abufSetColor(ab, fg, bg);
   int msglen = strlen(E.statusmsg);
   if (msglen > E.screencols)
     msglen = E.screencols;
