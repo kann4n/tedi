@@ -214,6 +214,7 @@ int editorReadkey() {
   while ((nread = read(STDIN_FILENO, &c, 1)) != 1) {
     if (nread == -1 && errno != EAGAIN)
       die("read");
+    editorRefreshScreen(); // refresh every 100ms delay
   }
   if (c == '\x1b') {
     char seq[3];
@@ -1091,7 +1092,7 @@ void editorDrawRows(struct abuf *ab) {
 
 void editorDrawStatusBar(struct abuf *ab) {
   char fg[] = "\x1b[38;2;255;255;255m";
-  char bg[] = "\x1b[48;2;20;20;25m";
+  char bg[] = "\x1b[48;2;10;10;10m";
   abufSetColor(ab, fg, bg);
 
   char status[80], rstatus[80];
@@ -1122,13 +1123,23 @@ void editorDrawStatusBar(struct abuf *ab) {
 void editorDrawMsgBar(struct abuf *ab) {
   abufAppend(ab, "\x1b[K", 3);
   char fg[] = "\x1b[38;2;255;255;255m";
-  char bg[] = "\x1b[48;2;30;30;35m";
+  char bg[] = "\x1b[48;2;15;15;15m";
   abufSetColor(ab, fg, bg);
+
   int msglen = strlen(E.statusmsg);
   if (msglen > E.screencols)
     msglen = E.screencols;
+
   if (msglen && time(NULL) - E.statusmsg_time < MSG_TTL)
     abufAppend(ab, E.statusmsg, msglen);
+  else
+    msglen = 0;
+
+  while (msglen < E.screencols) {
+    abufAppend(ab, " ", 1);
+    msglen++;
+  }
+  abufAppend(ab, "\x1b[m", 3);
 }
 
 void editorRefreshScreen() {
@@ -1200,7 +1211,7 @@ int main(int argc, char *argv[]) {
   initEditor();
   if (argc >= 2)
     editorOpen(argv[1]);
-  editorSetStatusMsg("HELP: <C-s> = Save | <C-q> = quit | <C-f> = find");
+  editorSetStatusMsg(" HELP: <C-s> = Save | <C-q> = quit | <C-f> = find ");
 
   while (1) {
     editorRefreshScreen();
