@@ -23,7 +23,7 @@
 
 /*** define ***/
 
-#define TEDI_VERSION "0.0.1" // _why ?
+#define TEDI_VERSION "0.0.16" // _why ?
 #define TAB_STOP     8       // tab is render as spaces
 #define S_LINES      2       // space lines at bottom
 #define MSG_TTL      3       // msg time to live
