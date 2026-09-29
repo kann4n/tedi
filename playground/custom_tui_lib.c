@@ -160,6 +160,13 @@ void putText(Buffer *buffer, char *text, int x, int y, int maxWidth) {
   }
 }
 
+void putTextCenteredRect(Buffer *buffer, Rect rect, char *text, int x, int y, int maxWidth) {
+  int len = strlen(text);
+  int startX = rect.x + (rect.w - len) / 2;
+  int midY = rect.y + rect.h / 2;
+  putText(buffer, text, startX, midY, maxWidth);
+}
+
 void putRects(Buffer *buffer, Rect *rects, int n) {
   for (int i = 0; i < n; i++) {
     putRect(buffer, rects[i]);
@@ -204,11 +211,15 @@ int main() {
   putRects(&buffer, bodyRects, bodyRule.n);
   putRects(&buffer, mainRects, mainRule.n);
 
-  putText(&buffer, "Header", 20, 1, 80);
-  putText(&buffer, "Sidebar", 4, 12, 8);
-  putText(&buffer, "Content", 30, 12, 80);
-  putText(&buffer, "Footer", 20, 22, 80);
-
+  // putText(&buffer, "Header", 20, 1, 80);
+  // putText(&buffer, "Sidebar", 4, 12, 8);
+  // putText(&buffer, "Content", 30, 12, 80);
+  // putText(&buffer, "Footer", 20, 22, 80);
+  putTextCenteredRect(&buffer, bodyRects[0], "Header", 0, 0, 80);
+  putTextCenteredRect(&buffer, bodyRects[2], "Footer", 0, 0, 80);
+  putTextCenteredRect(&buffer, mainRects[0], "Sidebar", 0, 0, 8);
+  putTextCenteredRect(&buffer, mainRects[1], "Content", 0, 0, 80);
+  
   renderBuffer(&buffer);
 
   free(bodyRects);
