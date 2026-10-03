@@ -1,3 +1,10 @@
+/*
+ * bugs: with some dimensions there is some misalignment and random chars
+ *       popping up.
+ *       the whole codebase needs to be refactored for ease of use,
+ *       functionality, maintainability, and performance. without random bugs.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -160,10 +167,11 @@ void putText(Buffer *buffer, char *text, int x, int y, int maxWidth) {
   }
 }
 
-void putTextCenteredRect(Buffer *buffer, Rect rect, char *text, int x, int y, int maxWidth) {
-  int len = strlen(text);
+void putTextCenteredRect(Buffer *buffer, Rect rect, char *text, int x, int y,
+                         int maxWidth) {
+  int len    = strlen(text);
   int startX = rect.x + (rect.w - len) / 2;
-  int midY = rect.y + rect.h / 2;
+  int midY   = rect.y + rect.h / 2;
   putText(buffer, text, startX, midY, maxWidth);
 }
 
@@ -219,7 +227,7 @@ int main() {
   putTextCenteredRect(&buffer, bodyRects[2], "Footer", 0, 0, 80);
   putTextCenteredRect(&buffer, mainRects[0], "Sidebar", 0, 0, 8);
   putTextCenteredRect(&buffer, mainRects[1], "Content", 0, 0, 80);
-  
+
   renderBuffer(&buffer);
 
   free(bodyRects);
