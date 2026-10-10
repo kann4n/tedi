@@ -13,7 +13,6 @@
  */
 int getfilename(char *dst, const char *src, int maxlen);
 
-
 /*
  * Sets the foreground color of the terminal.
  *
