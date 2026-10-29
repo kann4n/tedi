@@ -1,4 +1,4 @@
-#include "../include/tedi.h"
+#include "tedi.h"
 
 char *editorPrompt(char *prompt, void (*callback)(char *, int))
 {

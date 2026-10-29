@@ -1,4 +1,4 @@
-#include "../include/tedi.h"
+#include "tedi.h"
 
 struct editorConfig E;
 

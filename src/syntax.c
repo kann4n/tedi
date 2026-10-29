@@ -1,4 +1,4 @@
-#include "../include/tedi.h"
+#include "tedi.h"
 
 char *C_HL_extensions[] = {".c", ".cpp", ".h", NULL};
 char *Python_HL_extensions[] = {".py", NULL};
