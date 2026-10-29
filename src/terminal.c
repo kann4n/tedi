@@ -2,15 +2,23 @@
 
 void die(const char *msg)
 {
-	write(STDOUT_FILENO, "\x1b[2J", 4);
-	write(STDOUT_FILENO, "\x1b[H", 3);
+	int saved_errno = errno;
 
+	/* Leave alternate screen so cleanup cannot hide the error. */
+	disableRawMode();
+	errno = saved_errno;  // disableRawMode must not change the reported error
 	(DEBUG) ? perror(msg) : perror("tedi");
-	exit(-1);
+	exit(EXIT_FAILURE);
 }
 
 void disableRawMode()
 {
+	static int restored = 0;
+	/* do not switch screens twice. */
+	if (restored)
+		return;
+	restored = 1;
+
 	write(STDOUT_FILENO, "\x1b[?1049l", 8);  // disable alternate screen buffer
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
 		die("tcsetattr");
