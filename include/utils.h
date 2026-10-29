@@ -1,6 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+
+#define C_LEN(s) (sizeof(s) - 1)
+
 /*
  * Extracts the filename from a given path.
  *

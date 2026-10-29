@@ -20,6 +20,7 @@
 
 #include "abuf.h"
 #include "utils.h"
+#include "ansi.h"
 
 /* Definitions and constants */
 

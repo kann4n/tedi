@@ -19,7 +19,7 @@ void disableRawMode()
 		return;
 	restored = 1;
 
-	write(STDOUT_FILENO, "\x1b[?1049l", 8);  // disable alternate screen buffer
+	write(STDOUT_FILENO, ALT_SCR_BUF_OFF, C_LEN(ALT_SCR_BUF_OFF));
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &E.orig_termios) == -1)
 		die("tcsetattr");
 }
@@ -39,7 +39,7 @@ void enableRawMode()
 	raw.c_cc[VTIME] = 1;  // 100ms
 
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-	write(STDOUT_FILENO, "\x1b[?1049h", 8);  // enable alternate screen buffer
+	write(STDOUT_FILENO, ALT_SCR_BUF_ON, C_LEN(ALT_SCR_BUF_ON));
 }
 
 int editorReadkey()

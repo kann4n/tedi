@@ -93,7 +93,7 @@ void editorProcessKeypress()
 				return;
 			}
 		}
-		write(STDOUT_FILENO, "\x1b[?1049l", 6);
+		write(STDOUT_FILENO, ALT_SCR_BUF_OFF, C_LEN(ALT_SCR_BUF_OFF));
 		exit(0);
 		break;
 
