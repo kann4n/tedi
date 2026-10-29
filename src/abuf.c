@@ -16,7 +16,7 @@ void abufFree(struct abuf *ab) { free(ab->buf); }
 
 void abufSetColor(struct abuf *ab, char *fg, char *bg)
 {
-	if (!fg && !bg)
+	if (!fg || !bg)
 		return;
 	abufAppend(ab, fg, strlen(fg));
 	abufAppend(ab, bg, strlen(bg));
