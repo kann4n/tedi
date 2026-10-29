@@ -4,3 +4,5 @@ Diagnostics:
 Documentation:
   CommentFormat: Doxygen
   
+CompileFlags:
+  Add: [-I../include]
