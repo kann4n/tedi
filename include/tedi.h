@@ -31,7 +31,7 @@
 #define DEBUG 1
 
 #define CTRL_KEY(k) ((k) & 0x1f)
-#define SYM_CAPED_CTRL(k) (((k) < 32) ? ((k) + 64) : '?')
+#define SYM_CAPPED_CTRL(k) (((k) < 32) ? ((k) + 64) : '?')
 #define HL_HL_NUMBERS (1 << 0)
 #define HL_HL_STRINGS (1 << 1)
 
@@ -142,7 +142,7 @@ int getCursorPosition(int *rows, int *cols);
 int getWindowSize(int *rows, int *cols);
 
 // syntax
-int is_separator(int c);
+int isSeparator(int c);
 void editorUpdateSyntax(erow *row);
 int editorSyntaxToColor(int hl);
 void editorSelectSyntaxHighlight();

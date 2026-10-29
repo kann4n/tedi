@@ -21,7 +21,7 @@ struct editorSyntax HLDB[] = {
 
 #define HLDB_ENTRIES (sizeof(HLDB) / sizeof(HLDB[0]))
 
-int is_separator(int c) { return isspace(c) || c == '\0' || strchr(",.()+-=~%<>[]{};", c) != NULL; }
+int isSeparator(int c) { return isspace(c) || c == '\0' || strchr(",.()+-=~%<>[]{};", c) != NULL; }
 
 void editorUpdateSyntax(erow *row)
 {
@@ -115,7 +115,7 @@ void editorUpdateSyntax(erow *row)
 				int kw2 = keywords[j][klen - 1] == '|';  // -1 cause end is '\0'
 				if (kw2)
 					klen--;  // remove secondary keywords identifier '|'
-				if (!strncmp(&row->render[i], keywords[j], klen) && is_separator(row->render[i + klen])) {
+				if (!strncmp(&row->render[i], keywords[j], klen) && isSeparator(row->render[i + klen])) {
 					memset(&row->hl[i], kw2 ? HL_KEYWORD_2 : HL_KEYWORD_1, klen);
 					i += klen;
 					break;
@@ -126,7 +126,7 @@ void editorUpdateSyntax(erow *row)
 				continue;
 			}
 		}
-		prev_sep = is_separator(c);
+		prev_sep = isSeparator(c);
 		i++;
 	}
 	int changed = (row->hl_open_comment != in_comment);
@@ -201,7 +201,7 @@ void editorLoadColorScheme(const char *path)
 	ssize_t linelen;
 	size_t linecap = 0;
 
-	getfilename(E.theme.name, path, sizeof(E.theme.name));
+	getFilename(E.theme.name, path, sizeof(E.theme.name));
 	// TODO: separate this to another function
 	while ((linelen = getline(&line, &linecap, fp)) != -1) {
 		char key[32];

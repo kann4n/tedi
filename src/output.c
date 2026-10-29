@@ -59,7 +59,7 @@ void editorDrawRows(struct abuf *ab)
 
 			for (int j = 0; j < len; j++) {
 				if (iscntrl(c[j])) {
-					char sym = SYM_CAPED_CTRL(c[j]);
+					char sym = SYM_CAPPED_CTRL(c[j]);
 					abufAppend(ab, "\x1b[7m", 4);  // set inverse colorcode
 					abufAppend(ab, &sym, 1);
 					abufAppend(ab, "\x1b[m", 3);  // reset colorcode

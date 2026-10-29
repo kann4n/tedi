@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int getfilename(char *dst, const char *src, int maxlen)
+int getFilename(char *dst, const char *src, int maxlen)
 {
 	char *slash = strrchr(src, '/');
 	const char *name_start = slash ? slash : src;

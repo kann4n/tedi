@@ -14,7 +14,7 @@
  *
  * note: path must be in the unix format.
  */
-int getfilename(char *dst, const char *src, int maxlen);
+int getFilename(char *dst, const char *src, int maxlen);
 
 /*
  * Sets the foreground color of the terminal.
