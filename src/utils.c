@@ -18,6 +18,6 @@ int getFilename(char *dst, const char *src, int maxlen)
 	return name_len;
 }
 
-void setColorFG(char *fg, char r, char g, char b) { snprintf(fg, 24, "\033[38;2;%d;%d;%dm", r, g, b); }
+void setColorFG(char *fg, unsigned char r, unsigned char g, unsigned char b) { snprintf(fg, 24, "\033[38;2;%d;%d;%dm", r, g, b); }
 
-void setColorBG(char *bg, char r, char g, char b) { snprintf(bg, 24, "\033[48;2;%d;%d;%dm", r, g, b); }
+void setColorBG(char *bg, unsigned char r, unsigned char g, unsigned char b) { snprintf(bg, 24, "\033[48;2;%d;%d;%dm", r, g, b); }

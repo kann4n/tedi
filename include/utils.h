@@ -24,7 +24,7 @@ int getFilename(char *dst, const char *src, int maxlen);
  * \param green component of the color.
  * \param blue component of the color.
  */
-void setColorFG(char *fg, char r, char g, char b);
+void setColorFG(char *fg, unsigned char r, unsigned char g, unsigned char b);
 
 /*
  * Sets the background color of the terminal.
@@ -34,6 +34,6 @@ void setColorFG(char *fg, char r, char g, char b);
  * \param green component of the color.
  * \param blue component of the color.
  */
-void setColorBG(char *bg, char r, char g, char b);
+void setColorBG(char *bg, unsigned char r, unsigned char g, unsigned char b);
 
 #endif
