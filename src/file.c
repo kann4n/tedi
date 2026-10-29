@@ -27,8 +27,21 @@ void editorOpen(char *filename)
 	editorSelectSyntaxHighlight();
 
 	FILE *fp = fopen(filename, "r");
-	if (!fp)
+	if (!fp) {
+		if (errno == ENOENT) {
+			E.dirty = 0;
+			return;
+		}
 		die("fopen");
+	}
+	struct stat st;
+	if (fstat(fileno(fp), &st) == -1)
+		die("fstat");
+	if (S_ISDIR(st.st_mode)) {
+		fclose(fp);
+		errno = EISDIR;
+		die("fopen");
+	}
 	char *line = NULL;
 	size_t linecap = 0;
 	ssize_t linelen;
