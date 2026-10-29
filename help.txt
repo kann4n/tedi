@@ -1,9 +1,21 @@
-clone it
-cd into it
-make it
-run it
+Tedi - Text Editor
 
-CTRL-s to save
-CTRL-f to find
-CTRL-q to quit
+Build & Run:
+  make
+  ./build/tedi [file]
 
+Keys:
+  CTRL-s        Save
+  CTRL-f        Find (ESC to cancel)
+  CTRL-q        Quit (press '!' to discard unsaved changes)
+
+  Enter         New line
+  Backspace     Delete previous character
+  Delete        Delete character under cursor
+
+  Arrow keys    Move cursor
+  Page Up/Down  Scroll
+  Home/End      Start/end of line
+
+  CTRL-h        Delete previous character (alias for Backspace)
+  CTRL-t        Load theme (hardcoded to test.colorscheme)
